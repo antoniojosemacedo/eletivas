@@ -1,0 +1,607 @@
+import React, { useState } from 'react';
+import { CheckCircle, BookOpen, Users, School, FileText, Download } from 'lucide-react';
+
+const EletivasApp = () => {
+  const [formData, setFormData] = useState({
+    nomeAluno: '',
+    turma: '',
+    eletivaSelecionada: ''
+  });
+  
+  const [inscricaoRealizada, setInscricaoRealizada] = useState(false);
+  const [inscricoes, setInscricoes] = useState([]);
+  const [mostrarRelatorio, setMostrarRelatorio] = useState(false);
+
+  const turmas = [
+    '6º ANO A', '6º ANO B', 
+    '7º ANO A', '7º ANO B', '7º ANO C',
+    '8º ANO A', '8º ANO B', '8º ANO C'
+  ];
+
+  const alunosPorTurma = {
+    '6º ANO A': [
+      'ADRIANO RODRIGUES DE OLIVEIRA JUNIOR',
+      'AGHATA SILVA BANDEIRA',
+      'ANA CAROLINA SILVA E SILVA E SILVA',
+      'ANA LYA SARAIVA CRUZ',
+      'BENJAMIM MARREIROS DE SOUSA NASCIMENTO',
+      'BRUNNA SOFFYA RIBEIRO TRAJANO DOS ANJOS',
+      'DAVI HENRIQUE MORAIS FERREIRA',
+      'DHULIA IZABELY SILVA SANTOS',
+      'ELOHA SALES SUTERO PEREIRA',
+      'EMILLY NICOLY SOUSA SARAIVA BATISTA',
+      'ESTER DA SILVA DE SOUZA',
+      'FABRICIO MORAIS SOUSA',
+      'FRANCIANE PEREIRA DA CONCEICAO',
+      'FRANCISCO MATHEUS ALVES OLIVEIRA SILVA',
+      'GISELE LAVINNY DE SOUSA SILVA',
+      'ISABELY MORAIS ROCHA',
+      'ITALA SAWANE ROCHA SOARES',
+      'JAMYLLE SARAIVA NASCIMENTO CARDOSO',
+      'JOAO BOSCO DO NASCIMENTO NETO',
+      'LARA SOFIA SILVA E SILVA',
+      'LIVIA MARIA SANTOS PEREIRA DA SILVA',
+      'LUIS CARLOS GUIMARES CONCEICAO DOS SANTOS',
+      'LYVIA MIRELLA PEREIRA DE OLIVEIRA',
+      'MARCIO ULISSIS SILVA E SILVA',
+      'MURILO GUILHERME SOUSA DOS SANTOS NASCIMENTO',
+      'NADYA GABRIELLY DE OLIVEIRA SILVA',
+      'NAYRES NASCIMENTO SILVA RODRIGUES',
+      'NICOLY LIMA BORGES DA SILVA',
+      'PEROLA RANGEL DE QUEIROZ',
+      'SAMUEL ZHAION DA SILVA TEIXEIRA',
+      'THALLES KAUE SANTOS LUZ SILVA',
+      'THARLYSSON OLIVEIRA DA ROCHA ALVES',
+      'THAYUAN ENDREW DO NASCIMENTO PEREIRA MONTEIRO'
+    ],
+    '6º ANO B': [
+      'ALEXANDRO FERREIRA MENESES',
+      'ANA PAULA SANTOS DA PAZ',
+      'ANA SOFIA COSTA DE JESUS',
+      'ANNE HADASSA DO NASCIMENTO OLIVEIRA VIEIRA',
+      'ANTONIA EMILLY DE JESUS RODRIGUES',
+      'ANTONIO ALMEIDA FERREIRA DOS SANTOS NETO',
+      'ANTONIO DAVI DO NASCIMENTO SOUSA',
+      'ARTHUR HENRIQUE BATISTA SOUSA PINTO',
+      'ARTUR ALVES CARNEIRO FERREIRA',
+      'BEATRIZ CONCEICAO SANTOS DE CARVALHO',
+      'CANDIDO MIGUEL DUARTE VIEIRA',
+      'CINARA KEROLLY DO MONTE DA CONCEICAO',
+      'ELYSON LUCAS MORAIS SOUSA SILVA',
+      'ESTER MACEDO ANDRADE',
+      'EVANDO SILVA SANTANA',
+      'GUILHERME BARBOSA MARINHO',
+      'GUTTO ALVES RODRIGUES MOURA',
+      'ISADORA DA ROCHA LIMA',
+      'JAMIELLY MARTINS DUTRA',
+      'JOAO GABRIEL DOS REIS SILVA SILVEIRA',
+      'JOAO VICTOR SILVA DE CASTRO RODRIGUES',
+      'JOAO VICTOR SILVA DOS SANTOS',
+      'JOSE ALAN CRUZ DOS SANTOS',
+      'KAICK EMANUEL DA SILVA SOUSA PEREIRA',
+      'KALLEBE EMANUEL DE SOUSA MENESES',
+      'LUAN VITOR DA COSTA RODRIGUES',
+      'MARIA FERNANDA LOPES SILVA',
+      'MARIA LUIZA CHAVES MASCARENOS DE LIMA',
+      'MARIA LUIZA DA SILVA BRITO',
+      'NICOLLAS FERNANDES DOS SANTOS BORBA',
+      'PATRICIA VAZ CUSTODIO',
+      'RAYANAN GUSTAVO DE SOUSA ARAUJO'
+    ],
+    '7º ANO A': [
+      'ALEXANDRE SILVA LIMA JUNIOR',
+      'ALLAN DIAS DE SOUSA',
+      'AMANDA DA CONCEICAO SOARES',
+      'ANDRESSA DE SOUSA E SILVA',
+      'ANNY LARA DA SILVA FERREIRA',
+      'DHESYRRE DELLAMARES ALMEIDA SILVA',
+      'DIEGO CARDOSO DOS SANTOS',
+      'EMYLLY VICTORIA SILVA BORGES SANTOS',
+      'ENZO FELIPE COSTA GOMES',
+      'HADASSA LOPES MOURA',
+      'JEANE VITORIA DA SILVA DE SOUSA',
+      'JENNIFER BEATRIZ SANTANA LIMA',
+      'JHENIFFE ESTEFANNY DE JESUS RODRIGUES',
+      'JHUAN GUILHERME CABRAL FREITAS',
+      'JOAO VICTOR DOS SANTOS SOUSA',
+      'JOSE HUMBERTO SANTOS SOARES',
+      'MARIA JULIA DA SILVA PACHECO',
+      'MARIA JULIA SOUZA DA SILVA',
+      'MARIELE FERREIRA DOS SANTOS',
+      'MURYLLO RYAN SOUSA DE OLIVEIRA',
+      'NATHALIA EVELYN SPINOSA PINTO',
+      'PAULO SERGIO DO NASCIMENTO CARVALHO',
+      'PEDRO HENRIQUE RIBEIRO TRAJANO',
+      'REBECA DE SOUSA SILVA',
+      'REBECA SILVA DE LIMA',
+      'RENNAN PEREIRA DA SILVA',
+      'RYHANNA GABRIELLA DE FREITAS RIBEIRO',
+      'WELKSON FELLIPY SOUSA REIS',
+      'WITALO GABRIEL SOUSA ALMEIDA',
+      'YARLLY BARBOSA TRAJANO',
+      'YGOR DA CONCEICAO SILVA',
+      'YVES ADRIANO RODRIGUES MOURA',
+      'ZAYON SANTIAGO ROCHA SOARES'
+    ],
+    '7º ANO B': [
+      'ALICY VITORIA DE SOUSA SILVA',
+      'AMILTON DOUGLAS RODRIGUES CARRIAS',
+      'ANDREYNA DE ARAUJO SANTOS',
+      'ARTUR MACIEL DOS REIS SILVA',
+      'BRUNA COSTA BASTOS',
+      'CICERO DAVI DE CARVALHO MENESES',
+      'CINTHIA TELES DE ALMEIDA',
+      'DANIEL DE SOUSA FEITOSA CONCEICAO',
+      'ELLEN NICOLLY DA SILVA DE OLIVEIRA',
+      'EMANUELY DA SILVA RODRIGUES',
+      'IARLLEY FERREIRA DA SILVA',
+      'JOSE LUCAS PERERA SILVA',
+      'LAUAN VINICIUS DA SILVA DE SOUZA',
+      'LAYLA VITORIA DO CARMO CORREA',
+      'LUIS FERNANDO FRAZAO ABREU',
+      'LUIZ RICARDO VIEIRA DA SILVA',
+      'MARIA EMILIA COSTA FEITOSA',
+      'MARIELLY SANTOS DE SOUSA',
+      'MARLA RHUANA OLIVEIRA DE SOUSA',
+      'NICOLAS COSTA OLIVEIRA',
+      'PAULO RICARDO GOMES LOPES',
+      'RILARY SANTOS PEREIRA',
+      'RUAN DOS SANTOS SILVA',
+      'SAMUEL ARAUJO DE OLIVEIRA',
+      'SAMUEL SANTOS MOURA DA SILVA',
+      'THALISSON DA CONCEICAO DA SILVA',
+      'VICTOR HUGO LIMA SILVA',
+      'YANNA KIARA FERREIRA CONCEICAO',
+      'YASMILLY VITORIA SOUSA SILVA',
+      'YTHALLO REIS NUNES',
+      'YURI KAWAN PEREIRA DA SILVA'
+    ],
+    '7º ANO C': [
+      'ADRIELLE SOPHIA ALMEIDA BARBOSA',
+      'ANA CLARA FERNANDES DA CUNHA',
+      'ANDRESSA LIMA ALVES',
+      'ANTONIO GUILHERME E SILVA DA CONCEICAO',
+      'CARLOS EDUARDO PEREIRA CANDEIRA',
+      'ELLIAS DA CRUZ CONCEICAO SANTOS',
+      'EMANOEL VIANA DA ROCHA',
+      'EVELLYN VITORIA DA CONCEICAO LIMA',
+      'EVILLYN LAVINNY SANTOS SOUSA',
+      'FELIPE MARTINS DE MELO',
+      'FRANCIELE PEREIRA DA CONCEICAO',
+      'FRANCISCA ISADORA FELIX DE SOUSA',
+      'GLEIDSON RYAN SOUSA XAVIER',
+      'HUGO GABRIEL PEREIRA DOS SANTOS',
+      'JOAO GUILHERME DA SILVA MORAIS',
+      'JOAQUIM SOUSA LOPES',
+      'JULIANA FREIRE SILVA',
+      'KETHELLY LOHANY REIS LIMA',
+      'LAYSA SOUSA CONCEICAO',
+      'LUAN HENRIQUE DA SILVA SOUSA',
+      'LUDMILLA COSTA SOUSA',
+      'MARCIO VICTOR SILVA ANDRADE',
+      'MARIA JULIA SANTOS OLIVEIRA',
+      'MARIA JULIANY PEREIRA SOUSA',
+      'NAYKELLY SOUSA VIEIRA',
+      'ORLANDO KHALIL CARVALHO ALVES',
+      'PAULA FERNANDA DO NASCIMENTO DA SILVA',
+      'RIKELME RIAN DE FREITAS DA CONCEICAO',
+      'ROMULO BRYAM LOPES CHAVES',
+      'RYANNA VITORIA DA SILVA DE LIMA',
+      'THALLISON INACIO ARAUJO',
+      'VITORIA GABRIELA SILVA LIMA'
+    ],
+    '8º ANO A': [
+      'CECILIA CHAVES RODRIGUES SOUSA',
+      'DAVI DOS MARTIRIOS SOUSA COSTA',
+      'EMILLY FERNANDA FRANCA SOUZA',
+      'EMILLY KAWANY SILVA SANTOS',
+      'FRANCISCO EMANUEL ROSA DOS SANTOS',
+      'GUILHERME LISBOA RODRIGUES ARAUJO',
+      'GUSTAVO FERREIRA CAVALCANTE',
+      'IGO DOS ANJOS DAVID SANTOS',
+      'IKARO FERNANDO ALVES UCHOA',
+      'ISADORA DA SILVA FREITAS',
+      'JAKELINE BATISTA DAS NEVES SILVA',
+      'KALEBE PEREIRA MATOS DE OLIVEIRA',
+      'KAROLINY VITORIA DA SILVA MACHADO',
+      'KIARAH KAMILLY SOUSA DOS SANTOS',
+      'LETICIA DE LIMA SILVA',
+      'MADSON CARVALHO LOPES',
+      'MARCELO VITOR ARAUJO SOUSA',
+      'MARCOS FELIPE SOUSA VIEIRA',
+      'MARIA CLARA PEREIRA FARIAS',
+      'MATHEUS SILVA ROCHA',
+      'MIKAELLY TORRES NASCIMENTO',
+      'ONATEAC GABRIEL SILVA PEREIRA',
+      'PEDRO RYANN SPINOSA PINTO',
+      'RIQUELME SOUZA DE SA',
+      'THALIA VITORIA DO CARMO DE OLIVEIRA',
+      'VICTOR EMANUEL COSTA PATRICIO',
+      'WANKERLLEY DE JESUS DOS ANJOS',
+      'WELLINGTON DOUGLAS SANTOS DE JESUS',
+      'WILDERLAN ITALO MELO MARTINS'
+    ],
+    '8º ANO B': [
+      'ADRIELLE CRISTINE DOS SANTOS DE SOUSA',
+      'AILA DA SILVA E SILVA',
+      'ALEXANDRE SILVA ARAUJO',
+      'ALLICY VIANA DE AQUINO',
+      'ANDRE SILVA DO NASCIMENTO',
+      'ARIEDISON SOUSA LOPES',
+      'ARTHUR ENZO CONCEICAO SANTOS',
+      'CINTHIA MARIA SILVERIO DA SILVA',
+      'EDUARDO FERNANDES PEREIRA',
+      'GABRIELLY MELO SILVA',
+      'GEOVANNA ARAUJO DE OLIVEIRA',
+      'GUILHERME ALVES PEREIRA DOS SANTOS',
+      'HYNHEDA THAEMYLLY PEREIRA SILVA',
+      'JOAO EMANUEL PEREIRA SILVA',
+      'JOAO RAVIER DE SOUSA LEMOS',
+      'JOAO VICTOR OLIVEIRA SARAIVA',
+      'KALINY EMANUELLY SOUSA SAMPAIO',
+      'LAURA VITORIA DE JESUS CAMPOS',
+      'LUIS GABRYEL ALMEIDA DA SILVA',
+      'MARIA RITA ANDRADE MENDES',
+      'MATHEUS DOS SANTOS SILVA',
+      'MIRELLY VITORIA CUSTODIO DOS SANTOS',
+      'PEDRO HENRIQUE BOMFIM SILVA SOUSA',
+      'RITA EVELLY GOMES DOS SANTOS',
+      'SERGIO RIBEIRO JACINTO',
+      'TASSIA THALITA DE CARVALHO SILVEIRA',
+      'THASSYO BORGES VIANA',
+      'WESLEY CARVALHO PINHEIRO',
+      'YLKEMESSON DA SILVA E SILVA'
+    ],
+    '8º ANO C': [
+      'ADRYAN LIMA PAIVA',
+      'ANA SOPHYA AMORIM SANTOS',
+      'ANTONIA MAISA DE LIMA DA CONCEICAO RODRIGUES',
+      'ANTONIA RHICAELLY FERREIRA SOUSA',
+      'CARLOS EDUARDO DE FREITAS DE JESUS',
+      'CLEANE KEVELY RODRIGUES E SILVA',
+      'CRISTOPHER MATEUS FERNANDES ROCHA',
+      'EDSON RIAN ALVES OLIVEIRA LOPES',
+      'EMANOEL ALEXANDRE SILVA GONCALVES',
+      'EMILLY SOPHIA SILVA NUNES',
+      'FERNANDO DE JESUS ARAUJO',
+      'FRANCISCA RAFAELLY DOS REIS',
+      'GUSTAVO GUIMARAES DE MELO',
+      'HALYSON LUCAS DE JESUS SILVA',
+      'HYTALO GOMES LIRA PEREIRA',
+      'IBRAIM MARINHO BEZERRA',
+      'JHENFER NASCIMENTO FERREIRA',
+      'JOAO VITOR CARVALHO DOS SANTOS',
+      'JULIA EDUARDA CORREA DA SILVA',
+      'KELTON VICTOR MEDEIROS PASSOS',
+      'LEONARDO SOUSA SANTOS',
+      'MARIA DANIELLE SILVA DOURO',
+      'MARIA LIVIA GOMES MARTINS',
+      'MARIA VITORIA SOARES SILVA',
+      'PEDRO JORGE SANTOS DA PAZ',
+      'RAIMUNDO FERREIRA DE SOUSA NETO',
+      'RAUL NIKOLAS SILVA SOUZA',
+      'SAFIRA RAQUEL PEREIRA SOUSA'
+    ]
+  };
+
+
+  const eletivas = [
+    { id: 'eletiva1', nome: 'Eletiva de Ciências e Experimentos', descricao: 'Exploração prática do mundo científico através de experimentos divertidos' },
+    { id: 'eletiva2', nome: 'Eletiva de Arte e Criatividade', descricao: 'Desenvolvimento da expressão artística através de diversas técnicas' },
+    { id: 'eletiva3', nome: 'Eletiva de Esportes e Movimento', descricao: 'Atividades físicas e esportivas para promoção da saúde e bem-estar' },
+    { id: 'eletiva4', nome: 'Eletiva de Tecnologia e Programação', descricao: 'Introdução ao mundo da programação e tecnologia digital' },
+    { id: 'eletiva5', nome: 'Eletiva de Música e Teatro', descricao: 'Expressão artística através da música e artes cênicas' },
+    { id: 'eletiva6', nome: 'Eletiva de Meio Ambiente e Sustentabilidade', descricao: 'Consciência ambiental e práticas sustentáveis' },
+    { id: 'eletiva7', nome: 'Eletiva de Culinária e Nutrição', descricao: 'Preparo de alimentos e educação nutricional' }
+  ];
+
+  const handleTurmaChange = (e) => {
+    const turma = e.target.value;
+    setFormData(prev => ({
+      ...prev,
+      turma: turma,
+      nomeAluno: '' // Reset nome do aluno quando turma mudar
+    }));
+  };
+
+  const handleAlunoChange = (e) => {
+    setFormData(prev => ({
+      ...prev,
+      nomeAluno: e.target.value
+    }));
+  };
+
+  const handleEletivaSelect = (eletivaId) => {
+    setFormData(prev => ({
+      ...prev,
+      eletivaSelecionada: eletivaId
+    }));
+  };
+
+  const handleSubmit = () => {
+    if (formData.nomeAluno && formData.turma && formData.eletivaSelecionada) {
+      // Verificar se o aluno já está inscrito
+      const alunoJaInscrito = inscricoes.find(
+        inscricao => inscricao.nomeAluno === formData.nomeAluno && inscricao.turma === formData.turma
+      );
+
+      if (alunoJaInscrito) {
+        alert('Este aluno já possui uma inscrição realizada!');
+        return;
+      }
+
+      const novaInscricao = {
+        ...formData,
+        id: Date.now(),
+        dataInscricao: new Date().toLocaleString('pt-BR')
+      };
+      
+      setInscricoes(prev => [...prev, novaInscricao]);
+      setInscricaoRealizada(true);
+      
+      // Reset form after 3 seconds
+      setTimeout(() => {
+        setInscricaoRealizada(false);
+        setFormData({
+          nomeAluno: '',
+          turma: '',
+          eletivaSelecionada: ''
+        });
+      }, 3000);
+    }
+  };
+
+  const gerarRelatorio = () => {
+    if (inscricoes.length === 0) {
+      alert('Não há inscrições para gerar relatório!');
+      return;
+    }
+
+    // Agrupar inscrições por eletiva
+    const inscricoesPorEletiva = {};
+    inscricoes.forEach(inscricao => {
+      const eletiva = eletivas.find(e => e.id === inscricao.eletivaSelecionada);
+      const nomeEletiva = eletiva ? eletiva.nome : inscricao.eletivaSelecionada;
+      
+      if (!inscricoesPorEletiva[nomeEletiva]) {
+        inscricoesPorEletiva[nomeEletiva] = [];
+      }
+      inscricoesPorEletiva[nomeEletiva].push(inscricao);
+    });
+
+    // Criar conteúdo do relatório
+    let relatorio = 'RELATÓRIO DE INSCRIÇÕES EM ELETIVAS\n';
+    relatorio += 'Escola: Unidade Mais Integral Domingas Coelho Lira\n';
+    relatorio += `Data do Relatório: ${new Date().toLocaleString('pt-BR')}\n`;
+    relatorio += `Total de Inscrições: ${inscricoes.length}\n\n`;
+    relatorio += '='.repeat(60) + '\n\n';
+
+    Object.keys(inscricoesPorEletiva).forEach(eletiva => {
+      relatorio += `${eletiva.toUpperCase()}\n`;
+      relatorio += `Total de inscritos: ${inscricoesPorEletiva[eletiva].length}\n`;
+      relatorio += '-'.repeat(40) + '\n';
+      
+      inscricoesPorEletiva[eletiva].forEach((inscricao, index) => {
+        relatorio += `${index + 1}. ${inscricao.nomeAluno} - ${inscricao.turma}\n`;
+      });
+      relatorio += '\n';
+    });
+
+    // Criar e baixar arquivo
+    const blob = new Blob([relatorio], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `relatorio_eletivas_${new Date().toISOString().slice(0, 10)}.txt`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+
+  const isFormValid = formData.nomeAluno && formData.turma && formData.eletivaSelecionada;
+  const alunosDisponiveis = formData.turma ? alunosPorTurma[formData.turma] || [] : [];
+
+  if (mostrarRelatorio) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-8 px-4">
+        <div className="max-w-6xl mx-auto">
+          <div className="bg-white rounded-2xl shadow-xl p-6">
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-2xl font-bold text-gray-800 flex items-center gap-2">
+                <FileText className="w-6 h-6" />
+                Relatório de Inscrições
+              </h2>
+              <div className="flex gap-3">
+                <button
+                  onClick={gerarRelatorio}
+                  className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 flex items-center gap-2 transition-colors"
+                >
+                  <Download className="w-4 h-4" />
+                  Baixar Relatório
+                </button>
+                <button
+                  onClick={() => setMostrarRelatorio(false)}
+                  className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
+                >
+                  Voltar
+                </button>
+              </div>
+            </div>
+
+            {inscricoes.length === 0 ? (
+              <div className="text-center py-8">
+                <p className="text-gray-500 text-lg">Nenhuma inscrição realizada ainda.</p>
+              </div>
+            ) : (
+              <div className="space-y-6">
+                {eletivas.map(eletiva => {
+                  const inscricoesEletiva = inscricoes.filter(i => i.eletivaSelecionada === eletiva.id);
+                  
+                  return (
+                    <div key={eletiva.id} className="border rounded-lg p-4">
+                      <div className="flex justify-between items-center mb-3">
+                        <h3 className="text-lg font-semibold text-gray-800">{eletiva.nome}</h3>
+                        <span className="bg-indigo-100 text-indigo-800 px-3 py-1 rounded-full text-sm font-medium">
+                          {inscricoesEletiva.length} inscritos
+                        </span>
+                      </div>
+                      
+                      {inscricoesEletiva.length === 0 ? (
+                        <p className="text-gray-500 italic">Nenhuma inscrição</p>
+                      ) : (
+                        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-3">
+                          {inscricoesEletiva.map((inscricao, index) => (
+                            <div key={inscricao.id} className="bg-gray-50 p-3 rounded-lg">
+                              <p className="font-medium text-gray-800">{inscricao.nomeAluno}</p>
+                              <p className="text-sm text-gray-600">{inscricao.turma}</p>
+                              <p className="text-xs text-gray-500">{inscricao.dataInscricao}</p>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (inscricaoRealizada) {
+    const eletivaSelecionada = eletivas.find(e => e.id === formData.eletivaSelecionada);
+    
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
+        <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full text-center">
+          <div className="mb-6">
+            <CheckCircle className="w-20 h-20 text-green-500 mx-auto mb-4" />
+            <h2 className="text-2xl font-bold text-gray-800 mb-2">Inscrição Realizada!</h2>
+            <div className="bg-green-50 border-l-4 border-green-400 p-4 rounded-r-lg">
+              <p className="text-gray-700"><strong>Aluno:</strong> {formData.nomeAluno}</p>
+              <p className="text-gray-700"><strong>Turma:</strong> {formData.turma}</p>
+              <p className="text-gray-700"><strong>Eletiva:</strong> {eletivaSelecionada?.nome}</p>
+            </div>
+          </div>
+          <p className="text-gray-600">Redirecionando para nova inscrição...</p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-8 px-4">
+      <div className="max-w-4xl mx-auto">
+        {/* Header */}
+        <div className="text-center mb-8">
+          <div className="flex justify-center items-center gap-3 mb-4">
+            <School className="w-10 h-10 text-indigo-600" />
+            <h1 className="text-3xl font-bold text-gray-800">Unidade Mais Integral</h1>
+          </div>
+          <h2 className="text-xl text-gray-600">Domingas Coelho Lira</h2>
+          <p className="text-lg text-gray-700 mt-2">Sistema de Inscrição em Eletivas</p>
+          
+          {/* Botão Relatório */}
+          <div className="mt-4">
+            <button
+              onClick={() => setMostrarRelatorio(true)}
+              className="px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 flex items-center gap-2 mx-auto transition-colors"
+            >
+              <FileText className="w-4 h-4" />
+              Ver Relatório ({inscricoes.length} inscrições)
+            </button>
+          </div>
+        </div>
+
+        {/* Form */}
+        <div className="bg-white rounded-2xl shadow-xl p-6 mb-8">
+          <h3 className="text-xl font-semibold text-gray-800 mb-6 flex items-center gap-2">
+            <Users className="w-5 h-5" />
+            Dados do Aluno
+          </h3>
+          
+          <div className="grid md:grid-cols-2 gap-6 mb-6">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Turma
+              </label>
+              <select
+                value={formData.turma}
+                onChange={handleTurmaChange}
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
+              >
+                <option value="">Selecione a turma</option>
+                {turmas.map(turma => (
+                  <option key={turma} value={turma}>{turma}</option>
+                ))}
+              </select>
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Nome do Aluno
+              </label>
+              <select
+                value={formData.nomeAluno}
+                onChange={handleAlunoChange}
+                disabled={!formData.turma}
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors disabled:bg-gray-100"
+              >
+                <option value="">
+                  {formData.turma ? 'Selecione o aluno' : 'Primeiro selecione a turma'}
+                </option>
+                {alunosDisponiveis.map(aluno => (
+                  <option key={aluno} value={aluno}>{aluno}</option>
+                ))}
+              </select>
+            </div>
+          </div>
+        </div>
+
+        {/* Eletivas */}
+        <div className="bg-white rounded-2xl shadow-xl p-6">
+          <h3 className="text-xl font-semibold text-gray-800 mb-6 flex items-center gap-2">
+            <BookOpen className="w-5 h-5" />
+            Escolha sua Eletiva (selecione apenas uma)
+          </h3>
+          
+          <div className="grid md:grid-cols-2 gap-4">
+            {eletivas.map(eletiva => (
+              <div 
+                key={eletiva.id} 
+                onClick={() => handleEletivaSelect(eletiva.id)}
+                className={`p-4 border rounded-lg cursor-pointer transition-all ${
+                  formData.eletivaSelecionada === eletiva.id 
+                    ? 'border-indigo-500 bg-indigo-50 ring-2 ring-indigo-200' 
+                    : 'border-gray-200 hover:border-indigo-300 hover:bg-indigo-50'
+                }`}
+              >
+                <h4 className="font-semibold text-gray-800 mb-1">{eletiva.nome}</h4>
+                <p className="text-sm text-gray-600">{eletiva.descricao}</p>
+              </div>
+            ))}
+          </div>
+          
+          <div className="mt-8 text-center">
+            <button
+              onClick={handleSubmit}
+              disabled={!isFormValid}
+              className={`px-8 py-3 rounded-lg text-lg font-medium transition-colors ${
+                isFormValid 
+                  ? 'bg-indigo-600 text-white hover:bg-indigo-700' 
+                  : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+              }`}
+            >
+              Confirmar Inscrição
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default EletivasApp;
