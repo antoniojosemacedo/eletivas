@@ -1,0 +1,38 @@
+// Função para enviar dados ao Google Sheets
+async function salvarInscricao(dados) {
+  const URL_SCRIPT = "https://script.google.com/macros/s/AKfycbyTMoYVIhtsMy8zfcs6NbTgom3ZkTEPNuj5pHJlarwvW7TeypKA4AhGw7Aje8ZjWAsw/exec"; // Cole a URL do Passo 3
+
+  try {
+    const response = await fetch(URL_SCRIPT, {
+      method: "POST",
+      body: JSON.stringify(dados),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    
+    const resultado = await response.json();
+    return resultado.success;
+  } catch (error) {
+    console.error("Erro:", error);
+    return false;
+  }
+}
+
+// Exemplo de uso no botão "Confirmar Inscrição"
+document.getElementById("confirmar-btn").addEventListener("click", async () => {
+  const dados = {
+    nomeAluno: document.getElementById("aluno").value,
+    turma: document.getElementById("turma").value,
+    eletiva: document.querySelector(".eletiva-card.selected").id,
+  };
+
+  if (await salvarInscricao(dados)) {
+    alert("Inscrição salva com sucesso!");
+    // Limpa o formulário (opcional)
+    document.getElementById("turma").value = "";
+    document.getElementById("aluno").value = "";
+  } else {
+    alert("Erro ao salvar. Tente novamente.");
+  }
+});
